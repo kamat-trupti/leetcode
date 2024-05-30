@@ -12,3 +12,5 @@
 ![Screenshot (34)](https://github.com/kamat-trupti/leetcode/assets/157106635/ae35d069-5f6d-47c0-bbd4-c054eec84d84)
 ![image](https://github.com/kamat-trupti/leetcode/assets/157106635/8bdc5a52-03c5-43a1-ab4e-30386517598f)
 ![Screenshot (35)](https://github.com/kamat-trupti/leetcode/assets/157106635/6ceae5a6-ee1f-412b-8afc-da887009facb)
+![Screenshot (36)](https://github.com/kamat-trupti/leetcode/assets/157106635/a19e8815-0758-4c6b-ab41-f490d4ecaf24)
+
