@@ -9,7 +9,7 @@
 ![Screenshot (31)](https://github.com/kamat-trupti/leetcode/assets/157106635/80047a06-47bd-4f5c-b681-51341700d3a1)
 ![Screenshot (32)](https://github.com/kamat-trupti/leetcode/assets/157106635/cfebc82b-6429-4a69-ad51-fdf315d4a866)
 ![Screenshot (48)](https://github.com/kamat-trupti/leetcode/assets/157106635/f9d201a9-94c7-4286-a579-293ee9fbe031)
-
+![Screenshot (49)](https://github.com/kamat-trupti/leetcode/assets/157106635/b1db8cc2-03d2-40ea-b647-7a07c0ef47b8)
 ![Screenshot (33)](https://github.com/kamat-trupti/leetcode/assets/157106635/20e3a635-54c9-48d4-adc4-e86f5f28c025)
 ![Screenshot (34)](https://github.com/kamat-trupti/leetcode/assets/157106635/ae35d069-5f6d-47c0-bbd4-c054eec84d84)
 ![image](https://github.com/kamat-trupti/leetcode/assets/157106635/8bdc5a52-03c5-43a1-ab4e-30386517598f)
