@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phishing URL Detector</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --danger: #ef476f;
+            --success: #06d6a0;
+            --warning: #ffd166;
+            --dark: #192a56;
+            --light: #f8f9fa;
+            --gray: #e9ecef;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7ff;
+            color: var(--dark);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background-color: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        header {
+            background-color: var(--primary);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+        }
+        
+        header h1 {
+            margin-bottom: 10px;
+            font-size: 2.2rem;
+            font-weight: 700;
+        }
+        
+        header p {
+            opacity: 0.85;
+            font-size: 1rem;
+        }
+        
+        .shield-icon {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 2rem;
+            opacity: 0.2;
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        .search-box {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+        
+        .search-input {
+            flex: 1;
+            position: relative;
+        }
+        
+        .search-input i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #adb5bd;
+        }
+        
+        #url {
+            width: 100%;
+            padding: 15px 15px 15px 45px;
+            border: 2px solid var(--gray);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        #url:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+        }
+        
+        button {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 0 25px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        button:hover {
+            background-color: #3250ce;
+        }
+        
+        button:active {
+            transform: scale(0.97);
+        }
+        
+        button i {
+            margin-right: 8px;
+        }
+        
+        #result {
+            margin-top: 30px;
+            transition: all 0.3s ease;
+        }
+        
+        .result-card {
+            padding: 20px;
+            border-radius: 10px;
+            display: none;
+        }
+        
+        .result-card.safe {
+            background-color: rgba(6, 214, 160, 0.1);
+            border: 1px solid var(--success);
+        }
+        
+        .result-card.danger {
+            background-color: rgba(239, 71, 111, 0.1);
+            border: 1px solid var(--danger);
+        }
+        
+        .result-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .result-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-right: 15px;
+        }
+        
+        .safe .result-icon {
+            background-color: var(--success);
+            color: white;
+        }
+        
+        .danger .result-icon {
+            background-color: var(--danger);
+            color: white;
+        }
+        
+        .result-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+        
+        .safe .result-title {
+            color: var(--success);
+        }
+        
+        .danger .result-title {
+            color: var(--danger);
+        }
+        
+        .result-url {
+            padding: 12px;
+            background-color: rgba(0, 0, 0, 0.05);
+            border-radius: 6px;
+            font-family: monospace;
+            word-break: break-all;
+            margin-bottom: 15px;
+        }
+        
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 150px;
+        }
+        
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(67, 97, 238, 0.2);
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 20px;
+            font-size: 0.9rem;
+            color: #6c757d;
+            border-top: 1px solid var(--gray);
+        }
+        
+        /* Additional tips section */
+        .tips {
+            margin-top: 30px;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+        }
+        
+        .tips h3 {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            color: var(--dark);
+        }
+        
+        .tips ul {
+            list-style-type: none;
+            padding-left: 5px;
+        }
+        
+        .tips li {
+            position: relative;
+            padding-left: 25px;
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+        
+        .tips li::before {
+            content: "•";
+            position: absolute;
+            left: 5px;
+            color: var(--primary);
+            font-weight: bold;
+        }
+        
+        @media (max-width: 600px) {
+            .search-box {
+                flex-direction: column;
+            }
+            
+            .result-header {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .result-icon {
+                margin-right: 0;
+                margin-bottom: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <i class="fas fa-shield-alt shield-icon"></i>
+            <h1>Detection of phishing attack using CyberHook Ai</h1>
+            <p>Detect potentially malicious websites before you visit them</p>
+        </header>
+        
+        <div class="content">
+            <div class="search-box">
+                <div class="search-input">
+                    <i class="fas fa-link"></i>
+                    <input type="text" id="url" placeholder="Enter a website URL to check (e.g., https://example.com)">
+                </div>
+                <button onclick="checkURL()"><i class="fas fa-search"></i>Check URL</button>
+            </div>
+            
+            <div id="result"></div>
+            
+            <div class="tips">
+                <h3>Safe Browsing Tips</h3>
+                <ul>
+                    <li>Check for HTTPS in the URL (secure connection)</li>
+                    <li>Verify website URLs before entering personal information</li>
+                    <li>Be cautious of URLs with spelling errors or unusual domains</li>
+                    <li>Avoid clicking links in unsolicited emails or messages</li>
+                    <li>Keep your browser and security software updated</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>© 2025 Detection of phishing attack using CyberHook Ai | Protect yourself online </p>
+        </div>
+    </div>
+
+    <script>
+        async function checkURL() {
+            let urlInput = document.getElementById("url").value;
+            let resultDiv = document.getElementById("result");
+
+            if (!urlInput) {
+                resultDiv.innerHTML = `
+                    <div class="result-card danger">
+                        <div class="result-header">
+                            <div class="result-icon">
+                                <i class="fas fa-exclamation-triangle"></i>
+                            </div>
+                            <div class="result-title">Please enter a URL</div>
+                        </div>
+                    </div>
+                `;
+                document.querySelector(".result-card").style.display = "block";
+                return;
+            }
+
+            // Show loading spinner
+            resultDiv.innerHTML = `
+                <div class="loading">
+                    <div class="spinner"></div>
+                </div>
+            `;
+            
+            try {
+                let response = await fetch("/predict", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ url: urlInput }),
+                });
+                
+                let data = await response.json();
+                let prediction = data.prediction.toLowerCase();
+                
+                // Add a short delay to make the loading more noticeable
+                setTimeout(() => {
+                    if (prediction === "safe" || prediction === "legitimate") {
+                        resultDiv.innerHTML = `
+                            <div class="result-card safe">
+                                <div class="result-header">
+                                    <div class="result-icon">
+                                        <i class="fas fa-check"></i>
+                                    </div>
+                                    <div class="result-title">URL appears to be safe</div>
+                                </div>
+                                <div class="result-url">${urlInput}</div>
+                                <p>Our analysis indicates this URL is likely legitimate. However, always remain cautious when sharing personal information.</p>
+                            </div>
+                        `;
+                    } else {
+                        resultDiv.innerHTML = `
+                            <div class="result-card danger">
+                                <div class="result-header">
+                                    <div class="result-icon">
+                                        <i class="fas fa-exclamation-triangle"></i>
+                                    </div>
+                                    <div class="result-title">Potential phishing detected!</div>
+                                </div>
+                                <div class="result-url">${urlInput}</div>
+                                <p>Our analysis indicates this URL may be malicious or fraudulent. We recommend not visiting this website or providing any personal information.</p>
+                            </div>
+                        `;
+                    }
+                    document.querySelector(".result-card").style.display = "block";
+                }, 800);
+                
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="result-card danger">
+                        <div class="result-header">
+                            <div class="result-icon">
+                                <i class="fas fa-times"></i>
+                            </div>
+                            <div class="result-title">Error checking URL</div>
+                        </div>
+                        <p>There was a problem analyzing this URL. Please try again later.</p>
+                    </div>
+                `;
+                document.querySelector(".result-card").style.display = "block";
+            }
+        }
+        
+        // Also allow Enter key to submit
+        document.getElementById("url").addEventListener("keypress", function(event) {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                checkURL();
+            }
+        });
+    </script>
+</body>
+</html>
